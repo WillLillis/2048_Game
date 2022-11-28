@@ -26,6 +26,7 @@ public:
 		Q = 131072,
 		INVALID
 	};
+	
 
 	TFE_Square()
 	{
@@ -108,6 +109,66 @@ public:
 			break;
 		case TFE_Square::square_val_t::Q:
 			return TFE_Square::square_val_t::INVALID;
+			break;
+		}
+	}
+
+	int get_square_color() const
+	{
+		switch (val){ // better way to do this?
+		case TFE_Square::square_val_t::EMPTY:
+			return 15;
+			break;
+		case TFE_Square::square_val_t::A:
+			return 1;
+			break;
+		case TFE_Square::square_val_t::B:
+			return 2;
+			break;
+		case TFE_Square::square_val_t::C:
+			return 3;
+			break;
+		case TFE_Square::square_val_t::D:
+			return 4;
+			break;
+		case TFE_Square::square_val_t::E:
+			return 5;
+			break;
+		case TFE_Square::square_val_t::F:
+			return 6;
+			break;
+		case TFE_Square::square_val_t::G:
+			return 7;
+			break;
+		case TFE_Square::square_val_t::H:
+			return 8;
+			break;
+		case TFE_Square::square_val_t::I:
+			return 9;
+			break;
+		case TFE_Square::square_val_t::J:
+			return 10;
+			break;
+		case TFE_Square::square_val_t::K:
+			return 11;
+			break;
+		case TFE_Square::square_val_t::L:
+			return 12;
+			break;
+		case TFE_Square::square_val_t::M:
+			return 13;
+			break;
+		case TFE_Square::square_val_t::N:
+			return 14;
+			break;
+		case TFE_Square::square_val_t::O:
+			return 15;
+			break;
+		case TFE_Square::square_val_t::P:
+			return 1;
+			break;
+		case TFE_Square::square_val_t::Q:
+			return 0;
 			break;
 		}
 	}

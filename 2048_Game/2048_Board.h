@@ -1,6 +1,7 @@
 #pragma once
 #include "2048_Square.h"
 #include "Misc.h"
+#include "Misc.h"
 #include <cstdio>
 #include <string.h> // needed for memset?
 #include <cstdint>
@@ -47,8 +48,14 @@ public:
 		{
 			set_board_square(TFE_Square(TFE_Square::square_val_t::B), starting_square_row, starting_square_col);
 		}
-		
+		hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	}
+
+	void draw_board_wrap() // for testing
+	{
+		draw_board();
+	}
+
 
 	void play_game()
 	{
@@ -56,16 +63,38 @@ public:
 		TFE_Game::user_move user_in;
 		bool game_over = false;
 		uint_fast8_t next_row, next_col, next_val;
+		TFE_Square past_state[4][4];
+		bool change_state = false;
 
 		while (!game_over)
 		{
 			draw_board();
-			do { // user input
-				user_in_raw = _toupper(_getch());
-				user_in = user_in_to_user_move(user_in_raw);
-			} while (!is_valid_move(user_in));
+			do {
+				do { // user input
+					user_in_raw = _toupper(_getch());
+					user_in = user_in_to_user_move(user_in_raw);
+				} while (!is_valid_move(user_in));
 
-			make_move(user_in);
+				memcpy(past_state, board, sizeof(board));
+
+				make_move(user_in);
+
+				change_state = false;
+				for (uint_fast8_t row = 0; row < 4; row++)
+				{
+					for (uint_fast8_t col = 0; col < 4; col++)
+					{
+						if (past_state[row][col].get_square_val() != get_board_square(row, col).get_square_val())
+						{
+							change_state = true;
+							row = col = 4; // break out of the loop
+						}
+					}
+				}
+
+				
+
+			} while (!change_state);
 
 			next_val = rand() % 2;
 			do { // pick out the square to spawn the next piece (and make sure it's empty)
@@ -95,7 +124,7 @@ public:
 			{
 				if (get_board_square(row, col).is_empty())
 				{
-					return true;
+					return false;
 				}
 			}
 		}
@@ -107,16 +136,16 @@ public:
 			{
 				if (can_move_square_comb(src_row, src_col, src_row + 1, src_col)) // out of bound indices just get a returned false
 				{
-					return true;
+					return false;
 				}
 				else if (can_move_square_comb(src_row, src_col, src_row, src_col + 1)) // out of bound indices just get a returned false
 				{
-					return true;
+					return false;
 				}
 			}
 		}
 		
-		return false;
+		return true;
 	}
 
 	void set_board_square(TFE_Square square_contents, uint_fast8_t row, uint_fast8_t col)
@@ -146,10 +175,11 @@ private:
 	* 
 	*/
 	TFE_Square board[4][4];
+	HANDLE  hConsole;
 
 	static TFE_Game::user_move user_in_to_user_move(char input)
 	{
-		input = _toupper(input);
+		//input = _toupper(input);
 
 		switch (input) {
 		case 'W':
@@ -259,13 +289,14 @@ private:
 					need_comb = false;
 					for (int_fast8_t dest_row = src_row - 1; dest_row >= 0; dest_row--)
 					{
-						if (can_move_square_no_comb(src_row, col, dest_row, col)) // if the square is empty it's free real estate
+						if (!get_board_square(src_row, col).is_empty() &&
+							can_move_square_no_comb(src_row, col, dest_row, col)) // if the square is empty it's free real estate
 						{
 							last_valid = dest_row;
 							need_comb = false;
 							continue;
 						}
-						else if (!combined[dest_row] && can_move_square_comb(src_row, col, dest_row, col)) // if its occupied with an equal value square that hasn't been combined this turn
+						else if (!get_board_square(src_row, col).is_empty() && !combined[dest_row] && can_move_square_comb(src_row, col, dest_row, col)) // if its occupied with an equal value square that hasn't been combined this turn
 						{
 							last_valid = dest_row;
 							need_comb = true;
@@ -294,13 +325,14 @@ private:
 					need_comb = false;
 					for (int_fast8_t dest_row = src_row + 1; dest_row <= 3; dest_row++)
 					{
-						if (can_move_square_no_comb(src_row, col, dest_row, col)) // if the square is empty it's free real estate
+						if (!get_board_square(src_row, col).is_empty() &&
+							can_move_square_no_comb(src_row, col, dest_row, col)) // if the square is empty it's free real estate
 						{
 							last_valid = dest_row;
 							need_comb = false;
 							continue;
 						}
-						else if (!combined[dest_row] && can_move_square_comb(src_row, col, dest_row, col)) // if its occupied with an equal value square that hasn't been combined this turn
+						else if (!get_board_square(src_row, col).is_empty() && !combined[dest_row] && can_move_square_comb(src_row, col, dest_row, col)) // if its occupied with an equal value square that hasn't been combined this turn
 						{
 							last_valid = dest_row;
 							need_comb = true;
@@ -329,13 +361,14 @@ private:
 					need_comb = false;
 					for (int_fast8_t dest_col = src_col - 1; dest_col >= 0; dest_col--)
 					{
-						if (can_move_square_no_comb(row, src_col, row, dest_col)) // if the square is empty it's free real estate
+						if (!get_board_square(row, src_col).is_empty() &&
+							can_move_square_no_comb(row, src_col, row, dest_col)) // if the square is empty it's free real estate
 						{
 							last_valid = dest_col;
 							need_comb = false;
 							continue;
 						}
-						else if (!combined[dest_col] && can_move_square_comb(row, src_col, row, dest_col)) // if its occupied with an equal value square that hasn't been combined this turn
+						else if (!get_board_square(row, src_col).is_empty() && !combined[dest_col] && can_move_square_comb(row, src_col, row, dest_col)) // if its occupied with an equal value square that hasn't been combined this turn
 						{
 							last_valid = dest_col;
 							need_comb = true;
@@ -364,13 +397,14 @@ private:
 					need_comb = false;
 					for (uint_fast8_t dest_col = src_col + 1; dest_col <= 3; dest_col++)
 					{
-						if (can_move_square_no_comb(row, src_col, row, dest_col)) // if the square is empty it's free real estate
+						if (!get_board_square(row, src_col).is_empty() &&
+							can_move_square_no_comb(row, src_col, row, dest_col)) // if the square is empty it's free real estate
 						{
 							last_valid = dest_col;
 							need_comb = false;
 							continue;
 						}
-						else if (!combined[dest_col] && can_move_square_comb(row, src_col, row, dest_col)) // if its occupied with an equal value square that hasn't been combined this turn
+						else if (!get_board_square(row, src_col).is_empty() && !combined[dest_col] && can_move_square_comb(row, src_col, row, dest_col)) // if its occupied with an equal value square that hasn't been combined this turn
 						{
 							last_valid = dest_col;
 							need_comb = true;
@@ -405,6 +439,59 @@ private:
 
 	void draw_board() const
 	{
+		uint_fast8_t curr_color;
+		uint_fast8_t left_pad, right_pad;
+		const char strip[] = {0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, '\0'};
 
+		clear_screen();
+
+		for (uint_fast8_t row = 0; row < 4; row++)
+		{
+			for (uint_fast8_t layer = 0; layer < 9; layer++)
+			{
+				if (layer != 4)
+				{
+					for (uint_fast8_t col = 0; col < 4; col++)
+					{
+						curr_color = get_board_square(row, col).get_square_color();
+						SetConsoleTextAttribute(hConsole, curr_color);
+						printf("%s", strip);
+						printf(" ");
+					}
+				}
+				else
+				{
+					for (uint_fast8_t col = 0; col < 4; col++)
+					{
+						left_pad = (int)std::ceil((6.0 - (double)num_digits(get_board_square(row, col).get_square_val())) / 2.0);
+						right_pad = (int)((6 - num_digits(get_board_square(row, col).get_square_val())) / 2);
+						curr_color = get_board_square(row, col).get_square_color();
+						SetConsoleTextAttribute(hConsole, curr_color);
+						for (int i = 0; i < 7 + left_pad; i++)
+						{
+							printf("%c", 0xDB);
+						}
+						SetConsoleTextAttribute(hConsole, 7);
+						if (get_board_square(row, col).get_square_val() != 0)
+						{
+							printf("%d", get_board_square(row, col).get_square_val());
+						}
+						else
+						{
+							right_pad++;
+						}
+						SetConsoleTextAttribute(hConsole, curr_color);
+						for (int i = 0; i < 7 + right_pad; i++)
+						{
+							printf("%c", 0xDB);
+						}
+						printf(" ");
+					}
+				}
+				
+			}
+			printf("\n\n");
+		}
+		printf("\n");
 	}
 };
