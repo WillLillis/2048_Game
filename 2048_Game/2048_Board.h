@@ -113,6 +113,8 @@ public:
 
 			game_over = check_game_over();
 		}
+
+		draw_board();
 	}
 
 	bool check_game_over() const
@@ -441,7 +443,10 @@ private:
 	{
 		uint_fast8_t curr_color;
 		uint_fast8_t left_pad, right_pad;
-		const char strip[] = {0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, '\0'};
+		// casts needed to supress warnings about truncating the values in the array below from type int to type char
+		const char strip[] = {(char)0xDB, (char)0xDB, (char)0xDB, (char)0xDB, (char)0xDB, (char)0xDB, 
+			(char)0xDB, (char)0xDB, (char)0xDB, (char)0xDB, (char)0xDB, (char)0xDB, (char)0xDB, 
+			(char)0xDB, (char)0xDB, (char)0xDB, (char)0xDB, (char)0xDB, (char)0xDB, (char)0xDB, '\0'};
 
 		clear_screen();
 
@@ -455,8 +460,7 @@ private:
 					{
 						curr_color = get_board_square(row, col).get_square_color();
 						SetConsoleTextAttribute(hConsole, curr_color);
-						printf("%s", strip);
-						printf(" ");
+						printf("%s ", strip);
 					}
 				}
 				else
@@ -495,3 +499,4 @@ private:
 		printf("\n");
 	}
 };
+

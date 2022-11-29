@@ -123,3 +123,19 @@ inline size_t num_digits(const uint_fast16_t input)
 {
 	return input == 0 ? 1 : (size_t)std::log10(input) + 1;
 }
+
+// https://cboard.cprogramming.com/windows-programming/55672-maximizing-console-window-full-screen.html?highlight=alt+enter+console
+// game window can start out too small, game looks funky...better to just start with it blown up a bit
+void set_console_fullscreen()
+{
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD NewSBSize = GetLargestConsoleWindowSize(hOut);
+	SMALL_RECT DisplayArea = { 0, 0, 0, 0 };
+
+	SetConsoleScreenBufferSize(hOut, NewSBSize);
+
+	DisplayArea.Right = NewSBSize.X - 1;
+	DisplayArea.Bottom = NewSBSize.Y - 1;
+
+	SetConsoleWindowInfo(hOut, TRUE, &DisplayArea);
+}

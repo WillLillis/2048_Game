@@ -110,6 +110,9 @@ public:
 		case TFE_Square::square_val_t::Q:
 			return TFE_Square::square_val_t::INVALID;
 			break;
+		default:
+			return TFE_Square::square_val_t::INVALID;
+			break;
 		}
 	}
 
@@ -168,6 +171,9 @@ public:
 			return 1;
 			break;
 		case TFE_Square::square_val_t::Q:
+			return 0;
+			break;
+		default: //better behavior for bad inputs?
 			return 0;
 			break;
 		}

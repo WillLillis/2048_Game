@@ -9,3 +9,5 @@ int main()
 
 	return 0;
 }
+// TODO
+	// Check potential issues with check_game_over()
