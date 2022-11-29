@@ -139,3 +139,43 @@ void set_console_fullscreen()
 
 	SetConsoleWindowInfo(hOut, TRUE, &DisplayArea);
 }
+
+void set_fullscreen_for_realsies()
+{
+	INPUT input;
+	input.type = INPUT_KEYBOARD; 
+
+	input.ki.wScan = 0;
+	input.ki.time = 0;
+	input.ki.dwExtraInfo = 0;
+
+	input.ki.wVk = VK_F11;
+	input.ki.dwFlags = 0;
+	SendInput(1, &input, sizeof(INPUT)); // send message that F11 is being pressed
+
+	input.ki.dwFlags = KEYEVENTF_KEYUP;
+
+	SendInput(1, &input, sizeof(INPUT)); // send message that F11 is being released
+}
+
+// https://cboard.cprogramming.com/windows-programming/55672-maximizing-console-window-full-screen.html?highlight=alt+enter+console
+// game window can start out too small, cursor gets all bugged out if you try to resize...better to just start with it blown up a bit
+void set_console_correct_size()
+{
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	//COORD NewSBSize = GetLargestConsoleWindowSize(hOut);
+	COORD NewSBSize;
+	NewSBSize.X = 81 * 37;
+	NewSBSize.Y = 37;
+	SMALL_RECT DisplayArea = { 0, 0, 0, 0 };
+
+	SetConsoleScreenBufferSize(hOut, NewSBSize);
+
+	DisplayArea.Right = NewSBSize.X - 1;
+	DisplayArea.Bottom = NewSBSize.Y - 1;
+
+	if (SetConsoleWindowInfo(hOut, TRUE, &DisplayArea) < 0)
+	{
+		printf("What the fuck\n");
+	}
+}

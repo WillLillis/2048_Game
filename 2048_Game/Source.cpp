@@ -4,6 +4,8 @@
 
 int main()
 {
+	set_fullscreen_for_realsies();
+
 	TFE_Game test_game;
 	test_game.play_game();
 

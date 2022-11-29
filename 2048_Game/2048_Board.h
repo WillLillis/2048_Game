@@ -1,19 +1,17 @@
 #pragma once
-#include "2048_Square.h"
-#include "Misc.h"
-#include "Misc.h"
-#include <cstdio>
+#include "2048_Square.h" // TFE_Square class
+#include "Misc.h" // misc helper functions
+#include <cstdio> // printf
 #include <string.h> // needed for memset?
-#include <cstdint>
-#include <cstdlib>
-#include <ctime>
+#include <cstdint> // uint_fastx_t types
+#include <cstdlib> // ?
+#include <ctime> // needed to seed rand()
 #include <cassert>
-#include <cctype>
-#include <conio.h>
+#include <conio.h> // _getch()
 
 class TFE_Game{
 public:
-
+	bool first_draw;
 	const enum user_move : char
 	{
 		INVALID,
@@ -25,6 +23,7 @@ public:
 
 	TFE_Game()
 	{
+		first_draw = true;
 		printf("\033[?25l"); // hides the cursor
 		// set all squares to empty initially
 		for (uint_fast8_t row = 0; row < 4; row++)
@@ -439,7 +438,7 @@ private:
 		return move_in != TFE_Game::user_move::INVALID ? true : false;
 	}
 
-	void draw_board() const
+	void draw_board()
 	{
 		uint_fast8_t curr_color;
 		uint_fast8_t left_pad, right_pad;
@@ -492,9 +491,9 @@ private:
 						printf(" ");
 					}
 				}
-				
+				printf("\n");
 			}
-			printf("\n\n");
+			printf("\n");
 		}
 		printf("\n");
 	}
