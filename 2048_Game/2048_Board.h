@@ -11,7 +11,6 @@
 
 class TFE_Game{
 public:
-	bool first_draw;
 	const enum user_move : char
 	{
 		INVALID,
@@ -23,7 +22,6 @@ public:
 
 	TFE_Game()
 	{
-		first_draw = true;
 		printf("\033[?25l"); // hides the cursor
 		// set all squares to empty initially
 		for (uint_fast8_t row = 0; row < 4; row++)
@@ -466,8 +464,8 @@ private:
 				{
 					for (uint_fast8_t col = 0; col < 4; col++)
 					{
-						left_pad = (int)std::ceil((6.0 - (double)num_digits(get_board_square(row, col).get_square_val())) / 2.0);
-						right_pad = (int)((6 - num_digits(get_board_square(row, col).get_square_val())) / 2);
+						left_pad = (uint_fast8_t)std::ceil((6.0 - (double)num_digits(get_board_square(row, col).get_square_val())) / 2.0);
+						right_pad = (uint_fast8_t)((6 - num_digits(get_board_square(row, col).get_square_val())) / 2);
 						curr_color = get_board_square(row, col).get_square_color();
 						SetConsoleTextAttribute(hConsole, curr_color);
 						for (int i = 0; i < 7 + left_pad; i++)

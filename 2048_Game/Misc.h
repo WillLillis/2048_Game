@@ -150,7 +150,7 @@ void set_fullscreen_for_realsies()
 	input.ki.dwExtraInfo = 0;
 
 	input.ki.wVk = VK_F11;
-	input.ki.dwFlags = 0;
+	input.ki.dwFlags = 0; // KEYEVENTF_KEYDOWN not defined in WinUser.h for some reason....
 	SendInput(1, &input, sizeof(INPUT)); // send message that F11 is being pressed
 
 	input.ki.dwFlags = KEYEVENTF_KEYUP;
