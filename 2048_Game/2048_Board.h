@@ -11,6 +11,7 @@
 
 class TFE_Game{
 public:
+	uint_fast32_t score;
 	const enum user_move : char
 	{
 		INVALID,
@@ -47,13 +48,13 @@ public:
 			set_board_square(TFE_Square(TFE_Square::square_val_t::B), starting_square_row, starting_square_col);
 		}
 		hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		score = 0;
 	}
 
-	void draw_board_wrap() // for testing
+	void modify_score(uint32_t val)
 	{
-		draw_board();
+		score += val;
 	}
-
 
 	void play_game()
 	{
@@ -66,7 +67,7 @@ public:
 
 		while (!game_over)
 		{
-			draw_board();
+			draw_board(true);
 			do {
 				do { // user input
 					user_in_raw = _getch();
@@ -85,7 +86,7 @@ public:
 						if (past_state[row][col].get_square_val() != get_board_square(row, col).get_square_val())
 						{
 							change_state = true;
-							row = col = 4; // break out of the loop
+							row = col = 4; // break out of the loop, could use a goto here but that's bad practice?
 						}
 					}
 				}
@@ -109,7 +110,7 @@ public:
 			game_over = check_game_over();
 		}
 
-		draw_board();
+		draw_board(true);
 	}
 
 	bool check_game_over() const
@@ -286,6 +287,7 @@ private:
 		bool combined[4] = { false };
 		bool need_comb = false;
 		uint_fast8_t last_valid = 4;
+		uint_fast32_t add_score = 0;
 
 		switch (move_in) {
 		case TFE_Game::user_move::UP:
@@ -305,10 +307,12 @@ private:
 							need_comb = false;
 							continue;
 						}
-						else if (!get_board_square(src_row, col).is_empty() && !combined[dest_row] && can_move_square_comb(src_row, col, dest_row, col)) // if its occupied with an equal value square that hasn't been combined this turn
+						else if (!get_board_square(src_row, col).is_empty() // if its occupied with an equal value square that hasn't been combined this turn
+							&& !combined[dest_row] && can_move_square_comb(src_row, col, dest_row, col)) 
 						{
 							last_valid = dest_row;
 							need_comb = true;
+							add_score += (uint_fast32_t)TFE_Square::next_square(get_board_square(src_row, col).get_square_val()).get_square_val();
 							break;
 						}
 						else // otherwise there isn't a move, and we can't go any higher
@@ -323,6 +327,7 @@ private:
 					}
 				}
 			}
+			modify_score(add_score);
 			break;
 		case TFE_Game::user_move::DOWN:
 			for (uint_fast8_t col = 0; col < 4; col++)
@@ -341,10 +346,12 @@ private:
 							need_comb = false;
 							continue;
 						}
-						else if (!get_board_square(src_row, col).is_empty() && !combined[dest_row] && can_move_square_comb(src_row, col, dest_row, col)) // if its occupied with an equal value square that hasn't been combined this turn
+						else if (!get_board_square(src_row, col).is_empty() // if its occupied with an equal value square that hasn't been combined this turn
+							&& !combined[dest_row] && can_move_square_comb(src_row, col, dest_row, col)) 
 						{
 							last_valid = dest_row;
 							need_comb = true;
+							add_score += (uint_fast32_t)TFE_Square::next_square(get_board_square(src_row, col).get_square_val()).get_square_val();
 							break;
 						}
 						else // otherwise there isn't a move, and we can't go any higher
@@ -359,6 +366,7 @@ private:
 					}
 				}
 			}
+			modify_score(add_score);
 			break;
 		case TFE_Game::user_move::LEFT:
 			for (uint_fast8_t row = 0; row < 4; row++)
@@ -377,10 +385,12 @@ private:
 							need_comb = false;
 							continue;
 						}
-						else if (!get_board_square(row, src_col).is_empty() && !combined[dest_col] && can_move_square_comb(row, src_col, row, dest_col)) // if its occupied with an equal value square that hasn't been combined this turn
+						else if (!get_board_square(row, src_col).is_empty() // if its occupied with an equal value square that hasn't been combined this turn
+							&& !combined[dest_col] && can_move_square_comb(row, src_col, row, dest_col)) 
 						{
 							last_valid = dest_col;
 							need_comb = true;
+							add_score += (uint_fast32_t)TFE_Square::next_square(get_board_square(row, src_col).get_square_val()).get_square_val();
 							break;
 						}
 						else // otherwise there isn't a move, and we can't go any higher
@@ -395,6 +405,7 @@ private:
 					}
 				}
 			}
+			modify_score(add_score);
 			break;
 		case TFE_Game::user_move::RIGHT:
 			for (uint_fast8_t row = 0; row < 4; row++)
@@ -413,10 +424,12 @@ private:
 							need_comb = false;
 							continue;
 						}
-						else if (!get_board_square(row, src_col).is_empty() && !combined[dest_col] && can_move_square_comb(row, src_col, row, dest_col)) // if its occupied with an equal value square that hasn't been combined this turn
+						else if (!get_board_square(row, src_col).is_empty() // if its occupied with an equal value square that hasn't been combined this turn
+							&& !combined[dest_col] && can_move_square_comb(row, src_col, row, dest_col)) 
 						{
 							last_valid = dest_col;
 							need_comb = true;
+							add_score += (uint_fast32_t)TFE_Square::next_square(get_board_square(row, src_col).get_square_val()).get_square_val();
 							break;
 						}
 						else // otherwise there isn't a move, and we can't go any higher
@@ -431,6 +444,7 @@ private:
 					}
 				}
 			}
+			modify_score(add_score);
 			break;
 		case TFE_Game::user_move::EXIT:
 			exit(EXIT_SUCCESS); // cleaner way to do this?
@@ -449,7 +463,7 @@ private:
 	}
 
 	// need to add checks to skip over redundant draws->might help with flickering effect
-	void draw_board()
+	void draw_board(bool include_score)
 	{
 		uint_fast8_t curr_color;
 		uint_fast8_t left_pad, right_pad;
@@ -501,6 +515,11 @@ private:
 						}
 						printf(" ");
 					}
+				}
+				if (row == 3 && layer == 8 && include_score)
+				{
+					SetConsoleTextAttribute(hConsole, 15); // white text for score
+					printf("Score: %u", score);
 				}
 				printf("\n");
 			}
