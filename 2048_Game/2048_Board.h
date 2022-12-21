@@ -9,6 +9,12 @@
 #include <cassert>
 #include <conio.h> // _getch()
 
+// second key code put in buffer for each arrow key
+#define LEFT_ARR_KEY	75
+#define RIGHT_ARR_KEY	77
+#define UP_ARR_KEY		72
+#define DOWN_ARR_KEY	80
+
 class TFE_Game{
 public:
 	uint_fast32_t score;
@@ -177,6 +183,29 @@ private:
 
 	static TFE_Game::user_move user_in_to_user_move(char input)
 	{
+		// handle arrow key inputs...
+		if (input == (char)0xE0)
+		{
+			switch (_getch()) {
+			case UP_ARR_KEY:
+				return TFE_Game::user_move::UP;
+				break;
+			case DOWN_ARR_KEY:
+				return TFE_Game::user_move::DOWN;
+				break;
+			case RIGHT_ARR_KEY:
+				return TFE_Game::user_move::RIGHT;
+				break;
+			case LEFT_ARR_KEY:
+				return TFE_Game::user_move::LEFT;
+				break;
+			default:
+				return TFE_Game::user_move::INVALID;
+				break;
+			}
+		}
+
+		// otherwise we'll assume WASD
 		switch (input) {
 		case 'w':
 			return TFE_Game::user_move::UP;

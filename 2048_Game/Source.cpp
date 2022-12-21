@@ -36,5 +36,5 @@ int main()
 }
 // TODO
 	// Check potential issues with check_game_over()
-	// scorekeeping?
-	// exiting mid game?
+	// add ability to use arrow keys
+	// add alternates to windows specific calls so game works on MacOS
