@@ -124,22 +124,6 @@ inline size_t num_digits(const uint_fast16_t input)
 	return input == 0 ? 1 : (size_t)std::log10(input) + 1;
 }
 
-// https://cboard.cprogramming.com/windows-programming/55672-maximizing-console-window-full-screen.html?highlight=alt+enter+console
-// game window can start out too small, game looks funky...better to just start with it blown up a bit
-void set_console_fullscreen()
-{
-	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	COORD NewSBSize = GetLargestConsoleWindowSize(hOut);
-	SMALL_RECT DisplayArea = { 0, 0, 0, 0 };
-
-	SetConsoleScreenBufferSize(hOut, NewSBSize);
-
-	DisplayArea.Right = NewSBSize.X - 1;
-	DisplayArea.Bottom = NewSBSize.Y - 1;
-
-	SetConsoleWindowInfo(hOut, TRUE, &DisplayArea);
-}
-
 void set_fullscreen_for_realsies()
 {
 	INPUT input;
@@ -156,26 +140,4 @@ void set_fullscreen_for_realsies()
 	input.ki.dwFlags = KEYEVENTF_KEYUP;
 
 	SendInput(1, &input, sizeof(INPUT)); // send message that F11 is being released
-}
-
-// https://cboard.cprogramming.com/windows-programming/55672-maximizing-console-window-full-screen.html?highlight=alt+enter+console
-// game window can start out too small, cursor gets all bugged out if you try to resize...better to just start with it blown up a bit
-void set_console_correct_size()
-{
-	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	//COORD NewSBSize = GetLargestConsoleWindowSize(hOut);
-	COORD NewSBSize;
-	NewSBSize.X = 81 * 37;
-	NewSBSize.Y = 37;
-	SMALL_RECT DisplayArea = { 0, 0, 0, 0 };
-
-	SetConsoleScreenBufferSize(hOut, NewSBSize);
-
-	DisplayArea.Right = NewSBSize.X - 1;
-	DisplayArea.Bottom = NewSBSize.Y - 1;
-
-	if (SetConsoleWindowInfo(hOut, TRUE, &DisplayArea) < 0)
-	{
-		printf("What the fuck\n");
-	}
 }

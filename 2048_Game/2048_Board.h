@@ -14,6 +14,7 @@ public:
 	const enum user_move : char
 	{
 		INVALID,
+		EXIT,
 		UP = 'W',
 		DOWN = 'S',
 		LEFT = 'A',
@@ -68,16 +69,16 @@ public:
 			draw_board();
 			do {
 				do { // user input
-					user_in_raw = _toupper(_getch());
+					user_in_raw = _getch();
 					user_in = user_in_to_user_move(user_in_raw);
 				} while (!is_valid_move(user_in));
 
-				memcpy(past_state, board, sizeof(board));
+				memcpy(past_state, board, sizeof(board)); // copy the previous state of the board
 
-				make_move(user_in);
+				make_move(user_in); // attempt to make the move
 
 				change_state = false;
-				for (uint_fast8_t row = 0; row < 4; row++)
+				for (uint_fast8_t row = 0; row < 4; row++) // check if the move actually changed anything
 				{
 					for (uint_fast8_t col = 0; col < 4; col++)
 					{
@@ -88,9 +89,6 @@ public:
 						}
 					}
 				}
-
-				
-
 			} while (!change_state);
 
 			next_val = rand() % 2;
@@ -178,21 +176,33 @@ private:
 
 	static TFE_Game::user_move user_in_to_user_move(char input)
 	{
-		//input = _toupper(input);
-
 		switch (input) {
+		case 'w':
+			return TFE_Game::user_move::UP;
+			break;
 		case 'W':
 			return TFE_Game::user_move::UP;
+			break;
+		case 's':
+			return TFE_Game::user_move::DOWN;
 			break;
 		case 'S':
 			return TFE_Game::user_move::DOWN;
 			break;
+		case 'a':
+			return TFE_Game::user_move::LEFT;
+			break;
 		case 'A':
 			return TFE_Game::user_move::LEFT;
+			break;
+		case 'd':
+			return TFE_Game::user_move::RIGHT;
 			break;
 		case 'D':
 			return TFE_Game::user_move::RIGHT;
 			break;
+		case (char)27: // ESC key
+			return TFE_Game::user_move::EXIT;
 		default:
 			return TFE_Game::user_move::INVALID;
 			break;
@@ -422,6 +432,8 @@ private:
 				}
 			}
 			break;
+		case TFE_Game::user_move::EXIT:
+			exit(EXIT_SUCCESS); // cleaner way to do this?
 		case TFE_Game::user_move::INVALID:
 			return;
 			break;
@@ -436,6 +448,7 @@ private:
 		return move_in != TFE_Game::user_move::INVALID ? true : false;
 	}
 
+	// need to add checks to skip over redundant draws->might help with flickering effect
 	void draw_board()
 	{
 		uint_fast8_t curr_color;
@@ -496,4 +509,3 @@ private:
 		printf("\n");
 	}
 };
-
