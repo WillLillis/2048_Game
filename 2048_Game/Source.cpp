@@ -6,7 +6,7 @@ int main()
 {
 	char throw_away;
 	char game_select;
-	set_fullscreen_for_realsies();
+	set_fullscreen();
 
 	while (true) {		
 		system("cls");
@@ -35,6 +35,8 @@ int main()
 	return 0;
 }
 // TODO
-	// Check potential issues with check_game_over()
-	// add ability to use arrow keys
+	// Check potential issues with check_game_over()-> Resolved?
 	// add alternates to windows specific calls so game works on MacOS
+	// add parametrized constructor for testing purposes
+	// drawing optimizations?
+	// restart option?

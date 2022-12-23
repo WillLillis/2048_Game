@@ -119,12 +119,26 @@ void erase_lines(const uint_fast16_t num_lines)
 * Returns :
 * - size_t : the required quantity of digits
 ****************************************************************************/
-inline size_t num_digits(const uint_fast16_t input)
+inline size_t num_digits(const uint_fast32_t input)
 {
 	return input == 0 ? 1 : (size_t)std::log10(input) + 1;
 }
 
-void set_fullscreen_for_realsies()
+/****************************************************************************
+* set_fullscreen_for_realsies
+*
+* - Sets the console the program is running in to fullscreen by simulating
+* the press of the F11 key
+* - Tried a number of other fullscreen/ screen-resize solutions as given on
+* stack overflow, but they don't seem to reliably work anymore...
+*
+* Parameters :
+* - none
+*
+* Returns :
+* - none
+****************************************************************************/
+void set_fullscreen()
 {
 	INPUT input;
 	input.type = INPUT_KEYBOARD; 

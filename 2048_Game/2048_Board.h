@@ -8,8 +8,9 @@
 #include <ctime> // needed to seed rand()
 #include <cassert>
 #include <conio.h> // _getch()
+#include <string>
 
-// second key code put in buffer for each arrow key
+// second key code put in buffer for each arrow key (after initial 0xE0)
 #define LEFT_ARR_KEY	75
 #define RIGHT_ARR_KEY	77
 #define UP_ARR_KEY		72
@@ -53,6 +54,51 @@ public:
 		{
 			set_board_square(TFE_Square(TFE_Square::square_val_t::B), starting_square_row, starting_square_col);
 		}
+		hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		score = 0;
+	}
+
+	// can specify game's initial state with a string of comma separated initial values
+	// invalid
+	TFE_Game(std::string init_state)
+	{
+		std::string square_num_str;
+		uint32_t square_num;
+		size_t start = 0, pos = 0;
+		bool rest_empty = false;
+
+		printf("\033[?25l"); // hides the cursor
+		for (uint_fast8_t row = 0; row < 4; row++)
+		{
+			for (uint_fast8_t col = 0; col < 4; col++)
+			{
+				if (rest_empty)
+				{
+					set_board_square(TFE_Square(), row, col);
+				}
+				else
+				{
+					pos = init_state.find(",", start);
+					square_num_str = init_state.substr(start, pos);
+					start = pos + 1;
+					try
+					{
+						square_num = (uint32_t)std::stoul(square_num_str);
+					}
+					catch (std::exception except) // any kind of tomfoolery in the input string will result in an empty square
+					{
+						square_num = 0;
+					}
+					set_board_square(TFE_Square(square_num), row, col); // set the square's val
+
+					if (pos == std::string::npos || start >= init_state.length()) // if we've reached the end of the string earlier than expected
+					{
+						rest_empty = true;
+					}
+				}
+			}
+		}
+
 		hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 		score = 0;
 	}
@@ -186,7 +232,7 @@ private:
 		// handle arrow key inputs...
 		if (input == (char)0xE0)
 		{
-			switch (_getch()) {
+			switch (_getch()) { // pressing an arrow key places two key codes on the buffer, grab the second one to see which arrow key it was
 			case UP_ARR_KEY:
 				return TFE_Game::user_move::UP;
 				break;

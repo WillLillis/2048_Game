@@ -32,9 +32,27 @@ public:
 	{
 		set_val(TFE_Square::square_val_t::EMPTY);
 	}
+	
 	TFE_Square(TFE_Square::square_val_t val_in)
 	{
 		set_val(val_in);
+	}
+	// don't want to deal with crappy input values, if it's a bad value just set it to empty
+	TFE_Square(uint32_t val_in)
+	{
+		if (val_in == square_val_t::A || val_in == square_val_t::B || val_in == square_val_t::C
+			|| val_in == square_val_t::D || val_in == square_val_t::E || val_in == square_val_t::F
+			|| val_in == square_val_t::G || val_in == square_val_t::H || val_in == square_val_t::I
+			|| val_in == square_val_t::J || val_in == square_val_t::K || val_in == square_val_t::L
+			|| val_in == square_val_t::M || val_in == square_val_t::N || val_in == square_val_t::O
+			|| val_in == square_val_t::P || val_in == square_val_t::Q || val_in == square_val_t::INVALID || val_in == square_val_t::EMPTY)
+		{
+			set_val((TFE_Square::square_val_t)val_in);
+		}
+		else
+		{
+			set_val(square_val_t::EMPTY);
+		}
 	}
 
 	TFE_Square::square_val_t get_square_val() const
