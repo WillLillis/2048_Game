@@ -128,6 +128,11 @@ public:
 					user_in = user_in_to_user_move(user_in_raw);
 				} while (!is_valid_move(user_in));
 
+				if (force_gameover)
+				{
+					return;
+				}
+
 				memcpy(past_state, board, sizeof(board)); // copy the previous state of the board
 
 				make_move(user_in); // attempt to make the move
@@ -169,10 +174,6 @@ public:
 
 	bool check_game_over() const
 	{
-		if (force_gameover)
-		{
-			return true;
-		}
 		// first check if there's any empty squares
 		for (uint_fast8_t row = 0; row < 4; row++)
 		{
