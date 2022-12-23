@@ -23,6 +23,7 @@ public:
 	{
 		INVALID,
 		EXIT,
+		RESTART,
 		UP = 'W',
 		DOWN = 'S',
 		LEFT = 'A',
@@ -48,18 +49,18 @@ public:
 		uint_fast8_t starting_val = rand() % 2;
 		if (starting_val == 0)
 		{
-			set_board_square(TFE_Square(TFE_Square::square_val_t::A), starting_square_row, starting_square_col);
+			set_board_square(TFE_Square(TFE_Square::square_val_t::s_2), starting_square_row, starting_square_col);
 		}
 		else
 		{
-			set_board_square(TFE_Square(TFE_Square::square_val_t::B), starting_square_row, starting_square_col);
+			set_board_square(TFE_Square(TFE_Square::square_val_t::s_4), starting_square_row, starting_square_col);
 		}
 		hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 		score = 0;
+		force_gameover = false;
 	}
 
 	// can specify game's initial state with a string of comma separated initial values
-	// invalid
 	TFE_Game(std::string init_state)
 	{
 		std::string square_num_str;
@@ -101,6 +102,7 @@ public:
 
 		hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 		score = 0;
+		force_gameover = false;
 	}
 
 	void modify_score(uint32_t val)
@@ -152,11 +154,11 @@ public:
 
 			if (next_val == 0)
 			{
-				set_board_square(TFE_Square(TFE_Square::square_val_t::A), next_row, next_col);
+				set_board_square(TFE_Square(TFE_Square::square_val_t::s_2), next_row, next_col);
 			}
 			else
 			{
-				set_board_square(TFE_Square(TFE_Square::square_val_t::B), next_row, next_col);
+				set_board_square(TFE_Square(TFE_Square::square_val_t::s_4), next_row, next_col);
 			}
 
 			game_over = check_game_over();
@@ -167,6 +169,10 @@ public:
 
 	bool check_game_over() const
 	{
+		if (force_gameover)
+		{
+			return true;
+		}
 		// first check if there's any empty squares
 		for (uint_fast8_t row = 0; row < 4; row++)
 		{
@@ -226,8 +232,9 @@ private:
 	*/
 	TFE_Square board[4][4];
 	HANDLE  hConsole;
+	bool force_gameover;
 
-	static TFE_Game::user_move user_in_to_user_move(char input)
+	TFE_Game::user_move user_in_to_user_move(char input)
 	{
 		// handle arrow key inputs...
 		if (input == (char)0xE0)
@@ -251,7 +258,7 @@ private:
 			}
 		}
 
-		// otherwise we'll assume WASD
+		// otherwise we'll assume WASD keys/ other misc. inputs
 		switch (input) {
 		case 'w':
 			return TFE_Game::user_move::UP;
@@ -279,6 +286,12 @@ private:
 			break;
 		case (char)27: // ESC key
 			return TFE_Game::user_move::EXIT;
+		case 'r':
+			force_gameover = true; // cleaner way to do this?
+			break;
+		case 'R':
+			force_gameover = true; // cleaner way to do this?
+			break;
 		default:
 			return TFE_Game::user_move::INVALID;
 			break;

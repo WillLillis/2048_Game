@@ -36,7 +36,5 @@ int main()
 }
 // TODO
 	// Check potential issues with check_game_over()-> Resolved?
-	// add alternates to windows specific calls so game works on MacOS
-	// add parametrized constructor for testing purposes
+	// add alternates to windows specific calls so game works on MacOS?
 	// drawing optimizations?
-	// restart option?
