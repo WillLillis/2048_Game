@@ -73,7 +73,7 @@ public:
 
 		while (!game_over)
 		{
-			draw_board(true);
+			draw_board();
 			do {
 				do { // user input
 					user_in_raw = _getch();
@@ -116,7 +116,7 @@ public:
 			game_over = check_game_over();
 		}
 
-		draw_board(true);
+		draw_board();
 	}
 
 	bool check_game_over() const
@@ -134,15 +134,15 @@ public:
 		}
 		// if there aren't any empty squares, there must be two 
 		// adjacent squares of equal value for the game to continue
-		for (uint_fast8_t src_row = 0; src_row < 3; src_row++)
+		for (uint_fast8_t src_row = 0; src_row < 3; src_row++) // all rows but the last one
 		{
-			for (uint_fast8_t src_col = 0; src_col < 3; src_col++)
+			for (uint_fast8_t src_col = 0; src_col < 4; src_col++) // all cols
 			{
-				if (can_move_square_comb(src_row, src_col, src_row + 1, src_col)) // out of bound indices just get a returned false
+				if (can_move_square_comb(src_row, src_col, src_row + 1, src_col)) // out of bound indices just get returned false
 				{
 					return false;
 				}
-				else if (can_move_square_comb(src_row, src_col, src_row, src_col + 1)) // out of bound indices just get a returned false
+				else if (can_move_square_comb(src_row, src_col, src_row, src_col + 1)) // out of bound indices just get returned false
 				{
 					return false;
 				}
@@ -492,7 +492,7 @@ private:
 	}
 
 	// need to add checks to skip over redundant draws->might help with flickering effect
-	void draw_board(bool include_score)
+	void draw_board(bool include_score = true)
 	{
 		uint_fast8_t curr_color;
 		uint_fast8_t left_pad, right_pad;
