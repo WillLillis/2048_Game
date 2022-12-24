@@ -45,8 +45,7 @@ void display_error(const char* file_name, const int line_num, const char* func_s
 	printf("\t[LINE] %d\n", line_num);
 	printf("\t[FUNC] %s\n", func_sig);
 
-	if (user_clear)
-	{
+	if (user_clear){
 		printf("Press [ENTER] to continue...\n");
 		char throw_away = std::getchar();
 	}
@@ -93,12 +92,10 @@ inline void clear_screen()
 // does this work on Mac?-> seems to be the case
 void erase_lines(const uint_fast16_t num_lines)
 {
-	if (num_lines > 0)
-	{
+	if (num_lines > 0){
 		printf("\x1b[2K"); // Delete current line
 
-		for (uint_fast16_t line = 1; line < num_lines; line++) // line = 1 because we included the first line
-		{
+		for (uint_fast16_t line = 1; line < num_lines; line++){ // line = 1 because we included the first line
 			printf("\x1b[1A"); // Move cursor up one
 			printf("\x1b[2K"); // Delete the entire line
 		}

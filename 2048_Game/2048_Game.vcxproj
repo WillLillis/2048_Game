@@ -132,6 +132,9 @@
   <ItemGroup>
     <ClInclude Include="2048_Board.h" />
     <ClInclude Include="2048_Square.h" />
+    <ClInclude Include="BigCharsDef.h" />
+    <ClInclude Include="bigstdio.h" />
+    <ClInclude Include="bigstdio_switches.h" />
     <ClInclude Include="Misc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

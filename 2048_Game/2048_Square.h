@@ -45,12 +45,9 @@ public:
 			|| val_in == square_val_t::s_128 || val_in == square_val_t::s_256 || val_in == square_val_t::s_512
 			|| val_in == square_val_t::s_1024 || val_in == square_val_t::s_2048 || val_in == square_val_t::s_4096
 			|| val_in == square_val_t::s_8192 || val_in == square_val_t::s_16384 || val_in == square_val_t::s_32768
-			|| val_in == square_val_t::s_65536 || val_in == square_val_t::s_131072 || val_in == square_val_t::EMPTY)
-		{
+			|| val_in == square_val_t::s_65536 || val_in == square_val_t::s_131072 || val_in == square_val_t::EMPTY){
 			set_val((TFE_Square::square_val_t)val_in);
-		}
-		else
-		{
+		} else{
 			set_val(square_val_t::EMPTY);
 		}
 	}
