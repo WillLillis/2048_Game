@@ -173,7 +173,7 @@ public:
 		}
 		// if there aren't any empty squares, there must be two 
 		// adjacent squares of equal value for the game to continue
-		for (uint_fast8_t src_row = 0; src_row < 3; src_row++){ // all rows but the last one
+		for (uint_fast8_t src_row = 0; src_row < 4; src_row++){ // all rows but the last one
 			for (uint_fast8_t src_col = 0; src_col < 4; src_col++){ // all cols
 				if (can_move_square_comb(src_row, src_col, src_row + 1, src_col)){ // out of bound indices just get returned false
 					return false;

@@ -40,7 +40,7 @@ public:
 	// don't want to deal with crappy input values, if it's a bad value just set it to empty
 	TFE_Square(uint32_t val_in)
 	{
-		if (val_in == square_val_t::s_2 || val_in == square_val_t::s_4 || val_in == square_val_t::s_8
+		if (val_in == square_val_t::s_2 || val_in == square_val_t::s_4 || val_in == square_val_t::s_8 // move all of this to a translation function?
 			|| val_in == square_val_t::s_16 || val_in == square_val_t::s_32 || val_in == square_val_t::s_64
 			|| val_in == square_val_t::s_128 || val_in == square_val_t::s_256 || val_in == square_val_t::s_512
 			|| val_in == square_val_t::s_1024 || val_in == square_val_t::s_2048 || val_in == square_val_t::s_4096
@@ -135,7 +135,7 @@ public:
 	{
 		switch (val){ // better way to do this?
 		case TFE_Square::square_val_t::EMPTY:
-			return 15;
+			return 0; // 15
 			break;
 		case TFE_Square::square_val_t::s_2:
 			return 1;
